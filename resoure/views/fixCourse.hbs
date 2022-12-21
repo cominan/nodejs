@@ -1,0 +1,11 @@
+<form method="post" action="/update/{{course._id}}?_method=PUT">
+    <div class="mb-3">
+        <label for="name" class="form-label">Tên Khóa Học</label>
+        <textarea type="text" class="form-control" name="name" value="">{{course.name}}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Mô tả</label>
+        <textarea type="text" class="form-control" value="" name="description">{{course.description}}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+</form>

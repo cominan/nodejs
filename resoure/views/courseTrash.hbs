@@ -1,0 +1,72 @@
+<div>
+    <a href="/">Về trang chủ</a>
+</div>
+
+<form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each course}}
+            <tr>
+                <th scope="row">{{sum @index 1}}</th>
+                <td>
+                    <a href="detail/{{this._id}}">{{this.name}}</a>
+                </td>
+                <td>{{this.description}}</td>
+                <td>
+                    <button data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#Modal" type="button"
+                        class="btn btn-danger">Xóa vĩnh viễn</button>
+                    <a href="/restore/{{this._id}}" class="btn btn-primary">Khôi phục</a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+</form>
+
+<form method="post" id="deleSoft"></form>
+<!-- Modal -->
+<div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Bạn chắc chắn muốn xóa Khóa học này</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Trở lại</button>
+                <button type="button" id="delete" class="btn btn-danger">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var id;
+        var btnDeledSoft = document.getElementById('delete')
+        var formDeledSoft = document.getElementById('deleSoft')
+
+
+        $('#Modal').on('show.bs.modal', function (e) {
+            id = $(e.relatedTarget).data('id')
+        })
+
+
+
+        btnDeledSoft.onclick = function (e) {
+            formDeledSoft.action = '/destroy/' + id + '?_method=DELETE'
+            formDeledSoft.submit()
+        }
+        console.log(id)
+
+    })
+</script>

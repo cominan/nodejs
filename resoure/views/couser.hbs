@@ -1,0 +1,129 @@
+<form class="d-flex justify-content-between" method="PATCH" id="form-container" action="/action-select?_method=PATCH">
+    <a href="create">Tạo khóa học</a>
+    <a href="trash">Thùng rác ({{numb}})</a>
+
+    <div class="d-flex">
+        <select class="form-select form-select-sm mx-4" required name="action" aria-label="Default select example"
+            style="width: 140px">
+            <option value="" selected>--select action--</option>
+            <option value="delete">Xóa</option>
+        </select>
+        <button type="" id="btnAction" class="btn btn-primary" disabled>Thực hiện</button>
+    </div>
+
+    <form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="checkall">
+                            Check All
+                        </div>
+                    </th>
+                    <th scope="col">Name
+                        {{{renderIcon 'name' _sort}}}
+                    </th>
+                    <th scope="col">Description
+                        {{{renderIcon 'description' _sort}}}
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each course}}
+                <tr>
+                    <th scope="row">{{sum @index 1}}</th>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="checkitemIds[]" value={{this._id}}
+                                id="flexCheckDefault">
+                        </div>
+                    </td>
+                    <td>
+                        <a href="detail/{{this._id}}">{{this.name}}</a>
+                    </td>
+                    <td>{{this.description}}</td>
+                    <td>
+                        <button data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#Modal" type="button"
+                            class="btn btn-danger">Xóa</button>
+                        <a href="fixcourse/{{this._id}}" class="btn btn-primary">Sửa</a>
+                    </td>
+                    {{else}}
+                    <td class="d-flex justify-content-center">
+                        <p>Danh sách trống.<a href="create">Vui lòng tạo khóa học</a></p>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+    </form>
+</form>
+
+<form method="post" id="deleSoft"></form>
+<!-- Modal -->
+<div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Bạn chắc chắn muốn xóa Khóa học này</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Trở lại</button>
+                <button type="button" id="delete" class="btn btn-danger">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var id;
+        var btnDeledSoft = document.getElementById('delete')
+        var formDeledSoft = document.getElementById('deleSoft')
+        var checkAll = $('#checkall')
+        var checkItem = $('input[name="checkitemIds[]"]')
+        var btnAction = $('#btnAction')
+        var formContainer = $('#form-container')
+
+
+        $('#Modal').on('show.bs.modal', function (e) {
+            id = $(e.relatedTarget).data('id')
+        })
+
+        checkAll.change(function () {
+            var isChecked = $(this).prop('checked')
+            checkItem.prop('checked', isChecked)
+            excBtn()
+        })
+        checkItem.change(function () {
+            var isCheckItem = checkItem.length === $('input[name="checkitemIds[]"]:checked').length
+            checkAll.prop('checked', isCheckItem)
+            excBtn()
+        })
+
+        btnDeledSoft.onclick = function (e) {
+            formDeledSoft.action = '/delete-soft/' + id + '?_method=PATCH'
+            formDeledSoft.submit()
+            e.preventDefault()
+        }
+
+        function excBtn() {
+            var countSelecItem = $('input[name="checkitemIds[]"]:checked').length
+            if(countSelecItem) {
+                btnAction.attr('disabled',false)
+            } else {
+                btnAction.attr('disabled', true)
+            }
+        }
+        formContainer.on('submit',function (e) {
+            var isDisabled = $('#btnAction').hasClass ('disabled')
+            if( isDisabled ) {
+                e.preventDefault()
+            }
+        })
+    })
+</script>
